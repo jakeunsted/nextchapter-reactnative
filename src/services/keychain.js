@@ -1,81 +1,89 @@
-import * as Keychain from 'react-native-keychain';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const SERVICE_NAME = process.env.SERVICE_NAME || 'NextChapter';
+// Storage keys
+const ACCESS_TOKEN_KEY = 'ACCESS_TOKEN';
+const REFRESH_TOKEN_KEY = 'REFRESH_TOKEN';
 
 /**
- * Saves the access token and refresh token to the Keychain.
- * @param {string} accessToken - The access token to be saved.
- * @param {string} refreshToken - The refresh token to be saved.
+ * Stores the access token in Async Storage.
+ * @param {string} token - The access token to be stored.
+ * @returns {Promise<void>} A promise that resolves when the token is stored.
  */
-async function saveTokens(accessToken, refreshToken) {
+export const setAccessToken = async (token) => {
   try {
-    await Keychain.setGenericPassword('accessToken', accessToken, {
-      service: SERVICE_NAME,
-      accessControl: Keychain.ACCESS_CONTROL.USER_PRESENCE,
-    });
-
-    await Keychain.setGenericPassword('refreshToken', refreshToken, {
-      service: SERVICE_NAME,
-      accessControl:
-        Keychain.ACCESS_CONTROL.BIOMETRY_CURRENT_SET_OR_DEVICE_PASSCODE,
-    });
+    await AsyncStorage.setItem(ACCESS_TOKEN_KEY, token);
+    console.log('Access token stored successfully!');
   } catch (error) {
-    console.error('Error saving tokens to Keychain:', error);
+    console.error('Error storing access token:', error);
   }
-}
+};
 
 /**
- * Retrieves the access token from the Keychain.
- * @returns {Promise<string|null>} The access token or null if not found.
+ * Retrieves the access token from Async Storage.
+ * @returns {Promise<string|null>}
  */
-async function getAccessToken() {
+export const getAccessToken = async () => {
   try {
-    const credentials =
-      await Keychain.getGenericPassword({ service: SERVICE_NAME });
-    return credentials.password;
+    const token = await AsyncStorage.getItem(ACCESS_TOKEN_KEY);
+    console.log('Access token retrieved:', token);
+    return token;
   } catch (error) {
-    console.error('Error getting access token from Keychain:', error);
+    console.error('Error retrieving access token:', error);
+    return null;
   }
-}
+};
 
 /**
- * Sets the access token in the Keychain.
- * @param {string} accessToken - The access token to be saved.
+ * Deletes the access token from Async Storage.
+ * @returns {Promise<void>}
  */
-async function setAccessToken(accessToken) {
-  await Keychain.setGenericPassword('accessToken', accessToken, {
-    service: SERVICE_NAME,
-  });
-}
-
-/**
- * Retrieves the refresh token from the Keychain.
- * @returns {Promise<string|null>} The refresh token or null if not found.
- */
-async function getRefreshToken() {
+export const deleteAccessToken = async () => {
   try {
-    const credentials =
-      await Keychain.getGenericPassword({ service: SERVICE_NAME });
-    return credentials.password;
+    await AsyncStorage.removeItem(ACCESS_TOKEN_KEY);
+    console.log('Access token deleted successfully!');
   } catch (error) {
-    console.error('Error getting refresh token from Keychain:', error);
+    console.error('Error deleting access token:', error);
   }
-}
+};
 
 /**
- * Sets the refresh token in the Keychain.
- * @param {string} refreshToken - The refresh token to be saved.
+ * Stores the refresh token in Async Storage.
+ * @param {string} token - The refresh token to be stored.
+ * @returns {Promise<void>}
  */
-async function setRefreshToken(refreshToken) {
-  await Keychain.setGenericPassword('refreshToken', refreshToken, {
-    service: SERVICE_NAME,
-  });
-}
+export const setRefreshToken = async (token) => {
+  try {
+    await AsyncStorage.setItem(REFRESH_TOKEN_KEY, token);
+    console.log('Refresh token stored successfully!');
+  } catch (error) {
+    console.error('Error storing refresh token:', error);
+  }
+};
 
-export {
-  saveTokens,
-  getAccessToken,
-  setAccessToken,
-  getRefreshToken,
-  setRefreshToken,
+/**
+ * Retrieves the refresh token from Async Storage.
+ * @returns {Promise<string|null>}
+ */
+export const getRefreshToken = async () => {
+  try {
+    const token = await AsyncStorage.getItem(REFRESH_TOKEN_KEY);
+    console.log('Refresh token retrieved:', token);
+    return token;
+  } catch (error) {
+    console.error('Error retrieving refresh token:', error);
+    return null;
+  }
+};
+
+/**
+ * Deletes the refresh token from Async Storage.
+ * @returns {Promise<void>}
+ */
+export const deleteRefreshToken = async () => {
+  try {
+    await AsyncStorage.removeItem(REFRESH_TOKEN_KEY);
+    console.log('Refresh token deleted successfully!');
+  } catch (error) {
+    console.error('Error deleting refresh token:', error);
+  }
 };

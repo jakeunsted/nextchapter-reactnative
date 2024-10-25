@@ -2,7 +2,10 @@ import {
   getRefreshToken,
   setRefreshToken,
   setAccessToken,
+  getAccessToken,
 } from './keychain';
+
+import myFetch from './api';
 
 const baseUrl = process.env.BASE_URL || 'http://localhost:3001';
 
@@ -14,7 +17,7 @@ export const useAuth = () => {
     };
 
     try {
-      const response = await fetch(`${baseUrl}/auth/login`, {
+      const response = await myFetch(`${baseUrl}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
@@ -33,6 +36,8 @@ export const useAuth = () => {
       const data = await response.json();
       const { accessToken, refreshToken, user } = data;
 
+      console.log('accessToken', accessToken);
+
       if (!accessToken || !refreshToken) {
         throw new Error('No tokens received');
       }
@@ -43,7 +48,9 @@ export const useAuth = () => {
 
       await setAccessToken(accessToken);
       await setRefreshToken(refreshToken);
-      // redirect to home
+
+      const accessTokenTest = await getAccessToken();
+      console.log('accessToken getter', accessTokenTest);
     } catch (error) {
       console.error('Login error:', error);
       throw error;
@@ -54,7 +61,7 @@ export const useAuth = () => {
     const refreshToken = await getRefreshToken();
 
     try {
-      await fetch(`${baseUrl}/auth/logout`, {
+      await myFetch(`${baseUrl}/auth/logout`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ refreshToken }),
@@ -79,7 +86,7 @@ export const useAuth = () => {
 
     try {
       const response = 
-        await fetch(`${baseUrl}/auth/refresh-token`, {
+        await myFetch(`${baseUrl}/auth/refresh-token`, {
           method: 'POST',
           headers: { 
             'Content-Type': 'application/json',

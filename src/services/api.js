@@ -4,10 +4,13 @@ import { logout, refreshAccessToken } from './auth';
 async function myFetch(url, options) {
   try {
     const accessToken = await getAccessToken();
-    options.headers = {
-      ...options.headers,
-      Authorization: `Bearer ${accessToken}`,
-    };
+    if (accessToken) {
+      options.headers = {
+        ...options.headers,
+        Authorization: `Bearer ${accessToken}`,
+      };
+    }
+
     const response = await fetch(url, options);
 
     if (response.status === 401) {
