@@ -1,7 +1,10 @@
 import { getAccessToken, getRefreshToken } from './keychain';
 import { logout, refreshAccessToken } from './auth';
 
-async function myFetch(url, options) {
+const baseUrl = process.env.BASE_URL || 'http://localhost:3001';
+
+async function myFetch(path, options) {
+  const url = `${baseUrl}${path}`;
   try {
     const accessToken = await getAccessToken();
     if (accessToken) {
@@ -10,8 +13,9 @@ async function myFetch(url, options) {
         Authorization: `Bearer ${accessToken}`,
       };
     }
-
+    console.log('myFetch headers', options.headers);
     const response = await fetch(url, options);
+    console.log('myFetch response', response);
 
     if (response.status === 401) {
       const refreshToken = await getRefreshToken();

@@ -4,12 +4,14 @@ import {
   setAccessToken,
   getAccessToken,
 } from './keychain';
-
-import myFetch from './api';
-
-const baseUrl = process.env.BASE_URL || 'http://localhost:3001';
+import { AuthStore } from '../stores/AuthStore';
+import { BookStore } from '../stores/BookStore';
+import myFetch from '../services/api';
 
 export const useAuth = () => {
+  const { setUser } = AuthStore.getState();
+  const { fetchBooks } = BookStore.getState();
+
   const login = async (username, password) => {
 
     if (!username || !password) {
@@ -17,7 +19,7 @@ export const useAuth = () => {
     };
 
     try {
-      const response = await myFetch(`${baseUrl}/auth/login`, {
+      const response = await myFetch(`/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
@@ -46,8 +48,13 @@ export const useAuth = () => {
         throw new Error('No user data');
       }
 
+      setUser(user);
+      fetchBooks(user.id);
+
       await setAccessToken(accessToken);
       await setRefreshToken(refreshToken);
+
+      AuthStore.setState({ isAuthenticated: true });
 
       const accessTokenTest = await getAccessToken();
       console.log('accessToken getter', accessTokenTest);
@@ -66,6 +73,7 @@ export const useAuth = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ refreshToken }),
       });
+      AuthStore.setState({ isAuthenticated: false });
     } catch (error) {
       console.error('Logout error:', error);
     }
@@ -114,9 +122,16 @@ export const useAuth = () => {
     }
   };
 
+  const isAuthenticated = () => {
+    const user = AuthStore.getState().getUser();
+    console.log('isAuthenticated user', user);
+    return !!user;
+  };
+
   return {
     login,
     logout,
     refreshAccessToken,
+    isAuthenticated,
   };
 };
