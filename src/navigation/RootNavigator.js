@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Login from '../screens/Login';
 import HomeDashboard from '../screens/HomeDashboard';
@@ -7,13 +7,6 @@ import { AuthStore } from '../stores/AuthStore';
 const Stack = createNativeStackNavigator();
 
 const RootNavigator = () => {
-  useEffect(() => {
-    const initialize = async () => {
-      await AuthStore.getState().initialiseAuth();
-    };
-    
-    initialize();
-  }, []);
 
   const isAuthenticated = AuthStore((state) => state.isAuthenticated);
   console.log('isAuthenticated', isAuthenticated);

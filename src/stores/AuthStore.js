@@ -6,6 +6,7 @@ import { getAccessToken, getRefreshToken } from '../services/keychain';
 export const AuthStore = create((set, get) => ({
   user: null,
   isAuthenticated: false,
+  loading: true,
 
   getUser: () => {
     const { user } = get();
@@ -32,6 +33,7 @@ export const AuthStore = create((set, get) => ({
   },
 
   initialiseAuth: async () => {
+    set({ loading: true });
     try {
       const accessToken = await getAccessToken();
       const refreshToken = await getRefreshToken();
@@ -41,21 +43,22 @@ export const AuthStore = create((set, get) => ({
         const response = await myFetch('/auth/check-status', {
           method: 'GET',
         });
-        console.log('response user in init', response.user);
-        
-        if (response && response.user) {
-          set({ 
-            user: response.user,
-            isAuthenticated: true 
-          });
-          return true;
+        if (response.ok) {
+          const data = await response.json();
+
+          if (data && data.user) {
+            set({ user: data.user, isAuthenticated: true, loading: false });
+            return true;
+          }
+        } else {
+          set({ user: null, isAuthenticated: false, loading: false });
+          return false;
         }
       }
-      set({ user: null, isAuthenticated: false });
+      set({ user: null, isAuthenticated: false, loading: false });
       return false;
     } catch (error) {
-      console.error('Error initializing auth:', error);
-      set({ user: null, isAuthenticated: false });
+      set({ user: null, isAuthenticated: false, loading: false });
       return false;
     }
   },

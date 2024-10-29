@@ -16,10 +16,10 @@ export const useAuth = () => {
 
     if (!username || !password) {
       throw new Error('Username and password are required');
-    };
+    }
 
     try {
-      const response = await myFetch(`/auth/login`, {
+      const response = await myFetch('/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
@@ -38,8 +38,6 @@ export const useAuth = () => {
       const data = await response.json();
       const { accessToken, refreshToken, user } = data;
 
-      console.log('accessToken', accessToken);
-
       if (!accessToken || !refreshToken) {
         throw new Error('No tokens received');
       }
@@ -55,9 +53,6 @@ export const useAuth = () => {
       await setRefreshToken(refreshToken);
 
       AuthStore.setState({ isAuthenticated: true });
-
-      const accessTokenTest = await getAccessToken();
-      console.log('accessToken getter', accessTokenTest);
     } catch (error) {
       console.error('Login error:', error);
       throw error;
@@ -68,7 +63,7 @@ export const useAuth = () => {
     const refreshToken = await getRefreshToken();
 
     try {
-      await myFetch(`${baseUrl}/auth/logout`, {
+      await myFetch('/auth/logout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ refreshToken }),
@@ -93,10 +88,10 @@ export const useAuth = () => {
     }
 
     try {
-      const response = 
-        await myFetch(`${baseUrl}/auth/refresh-token`, {
+      const response =
+        await myFetch('/auth/refresh-token', {
           method: 'POST',
-          headers: { 
+          headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${refreshToken}`,
           },

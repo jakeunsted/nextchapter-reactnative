@@ -13,9 +13,7 @@ async function myFetch(path, options) {
         Authorization: `Bearer ${accessToken}`,
       };
     }
-    console.log('myFetch headers', options.headers);
     const response = await fetch(url, options);
-    console.log('myFetch response', response);
 
     if (response.status === 401) {
       const refreshToken = await getRefreshToken();

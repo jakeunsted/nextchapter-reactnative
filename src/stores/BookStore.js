@@ -13,8 +13,9 @@ export const BookStore = create((set, get) => ({
       const response = await myFetch(`/users-books/${userId}`, {
         method: 'GET',
       });
-      console.log('books', response);
-      set({ books: response });
+      const data = await response.json();
+      console.log('books', data);
+      set({ books: data });
     } catch (error) {
       set({ error });
     } finally {
