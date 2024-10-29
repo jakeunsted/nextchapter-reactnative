@@ -7,14 +7,12 @@ export const BookStore = create((set, get) => ({
   error: null,
 
   fetchBooks: async (userId) => {
-    console.log('Fetching books from store: ', userId);
     set({ loading: true, error: null });
     try {
       const response = await myFetch(`/users-books/${userId}`, {
         method: 'GET',
       });
       const data = await response.json();
-      console.log('books', data);
       set({ books: data });
     } catch (error) {
       set({ error });

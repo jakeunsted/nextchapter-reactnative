@@ -7,10 +7,7 @@ import { AuthStore } from '../stores/AuthStore';
 const Stack = createNativeStackNavigator();
 
 const RootNavigator = () => {
-
   const isAuthenticated = AuthStore((state) => state.isAuthenticated);
-  console.log('isAuthenticated', isAuthenticated);
-
   return (
     <Stack.Navigator>
       {isAuthenticated ? (
