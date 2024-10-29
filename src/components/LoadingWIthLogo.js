@@ -13,7 +13,7 @@ const LoadingWithLogo = () => {
       <Image
         resizeMode="contain"
         resizeMethod="auto"
-        source={require('../../assets/images/Artboard 2.png')}
+        source={require('../../assets/images/Artboard_2.png')}
         style={styles.imageStyle}
       />
       <View style={styles.loaderContainer}>

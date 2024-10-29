@@ -1,146 +1,106 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View, Text, Image, TouchableOpacity, ActivityIndicator,
 } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
 import { BookStore } from '../stores/BookStore';
 import { AuthStore } from '../stores/AuthStore';
 
-class HomeDashboard extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      snackbarVisible: false,
-      snackbarMessage: '',
-      snackbarColor: 'success',
-      booksLoading: true,
-      userLoading: true,
-      readBooks: [],
-      user: {},
+const HomeDashboard = (props) => {
+  const [booksLoading, setBooksLoading] = useState(true);
+  const [userLoading, setUserLoading] = useState(true);
+  const [readBooks, setReadBooks] = useState([]);
+  const [user, setUser] = useState({});
+
+  const goToBookDetails = (bookId) => {
+    console.log('getBookDetails for bookid', bookId);
+    // props.navigation.navigate(
+    //   'BookDetails',
+    //   { userId: user.id, bookId }
+    // );
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        await AuthStore.getState().initialiseAuth();
+        const userFromStore = AuthStore.getState().getUser();
+        setUser(userFromStore);
+
+        let books = BookStore.getState().getAllBooks();
+        if (!books.length) {
+          await BookStore.getState().fetchBooks(userFromStore.id);
+          books = BookStore.getState().getAllBooks();
+        }
+        setReadBooks(books);
+      } catch (error) {
+        console.error('An error occurred while fetching user books:', error);
+      } finally {
+        setBooksLoading(false);
+      }
     };
-  }
+    fetchData();
+  }, []);
 
-  componentDidMount() {
-    this.fetchData();
-  }
 
-  fetchData = async () => {
-    let toastMsg = this.props.route.params?.toast;
-    if (toastMsg) {
-      if (toastMsg === 'book-started') {
-        this.showToast('Book has been started!');
-      }
-      if (toastMsg === 'book-read') {
-        this.showToast('Book has been marked as read!');
-      }
-    }
-
-    try {
-      this.setState({ user: AuthStore().getUser() });
-      console.log('user', this.state.user);
-      // let books = await BookStore().getAllBooks();
-      // if (!books.length) {
-      //   books = await BookStore().fetchBooks(this.state.user.id);
-      // }
-      // this.setState({ readBooks: books });
-    } catch (error) {
-      console.error('An error occurred while fetching user books:', error);
-    } finally {
-      this.setState({ booksLoading: false, userLoading: false });
-    }
-  };
-
-  showToast = (message, color = 'success') => {
-    this.setState({
-      snackbarMessage: message,
-      snackbarColor: color,
-      snackbarVisible: true,
-    });
-  };
-
-  goToBookDetails = (bookId) => {
-    this.props.navigation.navigate(
-      'BookDetails',
-      { userId: this.state.user.id, bookId }
-    );
-  };
-
-  render() {
-    return (
-      <View>
-        {this.state.snackbarVisible && (
-          <View style={styles.snackbarContainer}>
-            <Text>{this.state.snackbarMessage}</Text>
-            <TouchableOpacity
-              onPress={() => this.setState({ snackbarVisible: false })}
-            >
-              <Text>Close</Text>
-            </TouchableOpacity>
+  return (
+    <View>
+      {!userLoading && user && (
+        <View style={styles.userProfileContainer}>
+          <View style={styles.profileImageContainer}>
+            <View style={styles.profileImage}>
+              <Text>JU</Text>
+            </View>
           </View>
-        )}
-
-        {!this.state.userLoading && this.state.user && (
-          <View style={styles.userProfileContainer}>
-            <View style={styles.profileImageContainer}>
-              <View style={styles.profileImage}>
-                <Text>JU</Text>
-              </View>
-            </View>
-            <View style={styles.userInfoContainer}>
-              <Text>{this.state.user.username}</Text>
-              <Text>Date Joined: {
-                new Date(this.state.user.createdAt).toLocaleDateString('en-GB')
-              }
-              </Text>
-            </View>
-            <View style={styles.divider} />
+          <View style={styles.userInfoContainer}>
+            <Text>{user.username}</Text>
+            <Text>Date Joined: {
+              new Date(user.createdAt).toLocaleDateString('en-GB')
+            }
+            </Text>
           </View>
-        )}
+          <View style={styles.divider} />
+        </View>
+      )}
 
-        {!this.state.booksLoading ? (
-          this.state.readBooks.length ? (
-            <View style={styles.booksContainer}>
-              {this.state.readBooks.map((book) => (
-                <TouchableOpacity
-                  key={book.book.id}
-                  style={styles.bookItem}
-                  onPress={() => this.goToBookDetails(book.id)}
-                >
-                  <View style={styles.bookDetailsContainer}>
-                    <Image
-                      source={{
-                        uri: book.book.bookDetails?.
-                          volumeInfo?.imageLinks?.thumbnail || book.image,
-                      }}
-                      style={styles.bookImage}
-                    />
-                    <Text style={styles.bookTitle}>{book.book.title}</Text>
-                    <Text style={styles.bookDate}>
-                      {new Date(
-                        book.dateFinished || book.dateStarted || book.createdAt
-                      ).toLocaleDateString()
-                      }
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              ))}
-            </View>
-          ) : (
-            <Text>You haven't read any books yet. Add your first book!</Text>
-          )
+      {!booksLoading ? (
+        readBooks.length ? (
+          <View style={styles.booksContainer}>
+            {readBooks.map((book) => (
+              <TouchableOpacity
+                key={book.book.id}
+                style={styles.bookItem}
+                onPress={() => goToBookDetails(book.id)}
+              >
+                <View style={styles.bookDetailsContainer}>
+                  <Image
+                    source={{
+                      uri: book.book.bookDetails?.
+                        volumeInfo?.imageLinks?.thumbnail || book.image,
+                    }}
+                    style={styles.bookImage}
+                  />
+                  <Text style={styles.bookTitle}>{book.book.title}</Text>
+                  <Text style={styles.bookDate}>
+                    {new Date(
+                      book.dateFinished || book.dateStarted || book.createdAt
+                    ).toLocaleDateString()
+                    }
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            ))}
+          </View>
         ) : (
-          <ActivityIndicator size="large" color="blue" />
-        )}
-      </View>
-    );
-  }
-}
+          <Text>You haven't read any books yet. Add your first book!</Text>
+        )
+      ) : (
+        <ActivityIndicator size="large" color="blue" />
+      )}
+    </View>
+  );
+};
 
 const styles = {
-  snackbarContainer: {
-    backgroundColor: 'success',
-    padding: 10,
-  },
   userProfileContainer: {
     alignItems: 'center',
     marginTop: 40,
