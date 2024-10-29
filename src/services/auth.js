@@ -2,15 +2,12 @@ import {
   getRefreshToken,
   setRefreshToken,
   setAccessToken,
-  getAccessToken,
 } from './keychain';
 import { AuthStore } from '../stores/AuthStore';
-import { BookStore } from '../stores/BookStore';
 import myFetch from '../services/api';
 
 export const useAuth = () => {
   const { setUser } = AuthStore.getState();
-  const { fetchBooks } = BookStore.getState();
 
   const login = async (username, password) => {
 
@@ -47,7 +44,6 @@ export const useAuth = () => {
       }
 
       setUser(user);
-      fetchBooks(user.id);
 
       await setAccessToken(accessToken);
       await setRefreshToken(refreshToken);
@@ -75,8 +71,6 @@ export const useAuth = () => {
 
     await setAccessToken(null);
     await setRefreshToken(null);
-
-    // Redirect to login page
   };
 
   const refreshAccessToken = async () => {
