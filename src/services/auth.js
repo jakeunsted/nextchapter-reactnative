@@ -1,5 +1,4 @@
 import {
-  getRefreshToken,
   setRefreshToken,
   setAccessToken,
 } from './keychain';
@@ -55,62 +54,6 @@ export const useAuth = () => {
     }
   };
 
-  const logout = async () => {
-    const refreshToken = await getRefreshToken();
-
-    try {
-      await myFetch('/auth/logout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ refreshToken }),
-      });
-      AuthStore.setState({ isAuthenticated: false });
-    } catch (error) {
-      console.error('Logout error:', error);
-    }
-
-    await setAccessToken(null);
-    await setRefreshToken(null);
-  };
-
-  const refreshAccessToken = async () => {
-    const refreshToken = await getRefreshToken();
-
-    if (!refreshToken) {
-      logout();
-      throw new Error('No refresh token available');
-    }
-
-    try {
-      const response =
-        await myFetch('/auth/refresh-token', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${refreshToken}`,
-          },
-        });
-
-      if (!response.ok) {
-        throw new Error('Failed to refresh token');
-      }
-
-      const data = await response.json();
-      const { accessToken } = data;
-
-      if (!accessToken) {
-        throw new Error('No access token received');
-      }
-
-      await setAccessToken(accessToken);
-      return accessToken;
-    } catch (error) {
-      console.error('Refresh token error:', error);
-      logout();
-      throw error;
-    }
-  };
-
   const isAuthenticated = () => {
     const user = AuthStore.getState().getUser();
     console.log('isAuthenticated user', user);
@@ -119,8 +62,6 @@ export const useAuth = () => {
 
   return {
     login,
-    logout,
-    refreshAccessToken,
     isAuthenticated,
   };
 };
