@@ -56,7 +56,6 @@ export const useAuth = () => {
 
   const isAuthenticated = () => {
     const user = AuthStore.getState().getUser();
-    console.log('isAuthenticated user', user);
     return !!user;
   };
 

@@ -37,8 +37,6 @@ export const AuthStore = create((set, get) => ({
     try {
       const accessToken = await getAccessToken();
       const refreshToken = await getRefreshToken();
-      console.log('accessToken in init', accessToken);
-      console.log('refreshToken in init', refreshToken);
       if (accessToken || refreshToken) {
         const response = await myFetch('/auth/check-status', {
           method: 'GET',
