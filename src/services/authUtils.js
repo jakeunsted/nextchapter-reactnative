@@ -26,7 +26,6 @@ export const logout = async () => {
 };
 
 export const refreshAccessToken = async () => {
-  console.log('refreshAccessToken');
   const refreshToken = await getRefreshToken();
 
   if (!refreshToken) {
@@ -43,7 +42,6 @@ export const refreshAccessToken = async () => {
           'Authorization': `Bearer ${refreshToken}`,
         },
       });
-    console.log('refreshAccessToken response', response);
 
     if (!response.ok) {
       console.log('refreshAccessToken response not ok');
@@ -51,6 +49,7 @@ export const refreshAccessToken = async () => {
     }
 
     const data = await response.json();
+    console.log('refreshAccessToken data', data);
     const { accessToken } = data;
 
     if (!accessToken) {
