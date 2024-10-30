@@ -5,6 +5,11 @@ import {
 import { BookStore } from '../stores/BookStore';
 import { AuthStore } from '../stores/AuthStore';
 
+/*
+components
+*/
+import BookCard from '../components/books/BookCard';
+
 const HomeDashboard = (props) => {
   const [booksLoading, setBooksLoading] = useState(true);
   const [userLoading, setUserLoading] = useState(true);
@@ -66,28 +71,11 @@ const HomeDashboard = (props) => {
         readBooks.length ? (
           <View style={styles.booksContainer}>
             {readBooks.map((book) => (
-              <TouchableOpacity
+              <BookCard
                 key={book.book.id}
-                style={styles.bookItem}
-                onPress={() => goToBookDetails(book.id)}
-              >
-                <View style={styles.bookDetailsContainer}>
-                  <Image
-                    source={{
-                      uri: book.book.bookDetails?.
-                        volumeInfo?.imageLinks?.thumbnail || book.image,
-                    }}
-                    style={styles.bookImage}
-                  />
-                  <Text style={styles.bookTitle}>{book.book.title}</Text>
-                  <Text style={styles.bookDate}>
-                    {new Date(
-                      book.dateFinished || book.dateStarted || book.createdAt
-                    ).toLocaleDateString()
-                    }
-                  </Text>
-                </View>
-              </TouchableOpacity>
+                book={book}
+                goToBookDetails={goToBookDetails}
+              />
             ))}
           </View>
         ) : (

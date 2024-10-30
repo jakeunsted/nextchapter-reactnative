@@ -4,6 +4,7 @@ import ErrorBoundary from './components/ErrorBoundary';
 import RootNavigator from './navigation/RootNavigator';
 import LoadingWithLogo from './components/LoadingWIthLogo';
 import { AuthStore } from './stores/AuthStore';
+import { NativeBaseProvider } from 'native-base';
 
 const App = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -26,7 +27,9 @@ const App = () => {
   return (
     <ErrorBoundary>
       <NavigationContainer>
-        <RootNavigator isAuthenticated={isAuthenticated} />
+        <NativeBaseProvider>
+          <RootNavigator isAuthenticated={isAuthenticated} />
+        </NativeBaseProvider>
       </NavigationContainer>
     </ErrorBoundary>
   );
