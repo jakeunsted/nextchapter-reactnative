@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import {
-  View, Text, Image, TouchableOpacity, ActivityIndicator,
-} from 'react-native';
+import { ActivityIndicator } from 'react-native';
+import { View, Text, ScrollView } from 'native-base';
+
+/*
+stores
+*/
 import { BookStore } from '../stores/BookStore';
 import { AuthStore } from '../stores/AuthStore';
 
@@ -48,43 +51,45 @@ const HomeDashboard = (props) => {
 
 
   return (
-    <View>
-      {!userLoading && user && (
-        <View style={styles.userProfileContainer}>
-          <View style={styles.profileImageContainer}>
-            <View style={styles.profileImage}>
-              <Text>JU</Text>
+    <ScrollView>
+      <View>
+        {!userLoading && user && (
+          <View style={styles.userProfileContainer}>
+            <View style={styles.profileImageContainer}>
+              <View style={styles.profileImage}>
+                <Text>JU</Text>
+              </View>
             </View>
+            <View style={styles.userInfoContainer}>
+              <Text>{user.username}</Text>
+              <Text>Date Joined: {
+                new Date(user.createdAt).toLocaleDateString('en-GB')
+              }
+              </Text>
+            </View>
+            <View style={styles.divider} />
           </View>
-          <View style={styles.userInfoContainer}>
-            <Text>{user.username}</Text>
-            <Text>Date Joined: {
-              new Date(user.createdAt).toLocaleDateString('en-GB')
-            }
-            </Text>
-          </View>
-          <View style={styles.divider} />
-        </View>
-      )}
+        )}
 
-      {!booksLoading ? (
-        readBooks.length ? (
-          <View style={styles.booksContainer}>
-            {readBooks.map((book) => (
-              <BookCard
-                key={book.book.id}
-                book={book}
-                goToBookDetails={goToBookDetails}
-              />
-            ))}
-          </View>
+        {!booksLoading ? (
+          readBooks.length ? (
+            <View style={styles.booksContainer}>
+              {readBooks.map((book) => (
+                <BookCard
+                  key={book.book.id}
+                  book={book}
+                  goToBookDetails={goToBookDetails}
+                />
+              ))}
+            </View>
+          ) : (
+            <Text>You haven't read any books yet. Add your first book!</Text>
+          )
         ) : (
-          <Text>You haven't read any books yet. Add your first book!</Text>
-        )
-      ) : (
-        <ActivityIndicator size="large" color="blue" />
-      )}
-    </View>
+          <ActivityIndicator size="large" color="blue" />
+        )}
+      </View>
+    </ScrollView>
   );
 };
 
@@ -117,28 +122,6 @@ const styles = {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'center',
-  },
-  bookItem: {
-    padding: 10,
-  },
-  bookDetailsContainer: {
-    maxWidth: 176,
-    minWidth: 176,
-    padding: 10,
-    borderRadius: 20,
-    elevation: 10,
-  },
-  bookImage: {
-    height: 200,
-    resizeMode: 'contain',
-    marginBottom: 10,
-  },
-  bookTitle: {
-    textAlign: 'center',
-  },
-  bookDate: {
-    textAlign: 'center',
-    color: 'grey',
   },
 };
 
