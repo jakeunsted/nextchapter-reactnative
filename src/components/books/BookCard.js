@@ -9,11 +9,23 @@ const styles = {
     borderRadius: 16,
     elevation: 10,
   },
-  image: {
+  bookImage: {
     paddingBottom: 8,
     maxHeight: 200,
     width: 120,
     height: 200,
+  },
+  boxContainer: {
+    alignItems: 'center',
+    backgroundColor: 'white',
+    paddingTop: 20,
+    paddingBottom: 5,
+  },
+  textTitle: {
+    textAlign: 'center',
+  },
+  textDate: {
+    textAlign: 'center',
   },
 };
 
@@ -32,16 +44,16 @@ const BookCard = (props) => {
       onPress={() => goToBookDetails(book.id)}
       style={styles.pressable}
     >
-      <Box alignItems="center">
+      <Box style={styles.boxContainer} rounded="lg">
         <Image
           source={{
             uri: bookImageUri,
           }}
           alt="Book Thumbnail"
-          style={styles.image}
+          style={styles.bookImage}
         />
-        <Text>{book.book.title}</Text>
-        <Text color="gray.500">
+        <Text style={styles.textTitle}>{book.book.title}</Text>
+        <Text style={styles.textDate} color="grey">
           {new Date(
             book.dateFinished || book.dateStarted || book.createdAt
           ).toLocaleDateString()}

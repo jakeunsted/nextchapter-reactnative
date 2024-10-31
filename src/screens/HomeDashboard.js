@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator } from 'react-native';
 import { View, Text, ScrollView } from 'native-base';
+import theme from '../styles/theme';
 
 /*
 stores
@@ -40,6 +41,7 @@ const HomeDashboard = (props) => {
           books = BookStore.getState().getAllBooks();
         }
         setReadBooks(books);
+        setUserLoading(false);
       } catch (error) {
         console.error('An error occurred while fetching user books:', error);
       } finally {
@@ -102,12 +104,12 @@ const styles = {
     marginBottom: 20,
   },
   profileImage: {
-    backgroundColor: 'blue',
     borderRadius: 40,
     width: 80,
     height: 80,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: theme.colors.primary.DEFAULT,
   },
   userInfoContainer: {
     alignItems: 'center',

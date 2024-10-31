@@ -9,10 +9,14 @@ const Stack = createNativeStackNavigator();
 const RootNavigator = () => {
   const isAuthenticated = AuthStore((state) => state.isAuthenticated);
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
       {isAuthenticated ? (
         <Stack.Group>
-          <Stack.Screen name="HomeDashboard" component={HomeDashboard} />
+          <Stack.Screen name="Home" component={HomeDashboard} />
         </Stack.Group>
       ) : (
         <Stack.Group>

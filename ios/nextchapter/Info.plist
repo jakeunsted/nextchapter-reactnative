@@ -34,9 +34,7 @@
     <dict>
         <key>books.google.com</key>
         <dict>
-            <key>NSIncludesSubdomains</key>
-            <true/>
-            <key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
+            <key>NSExceptionAllowsInsecureHTTPLoads</key>
             <true/>
         </dict>
     </dict>

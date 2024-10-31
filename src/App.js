@@ -5,6 +5,7 @@ import RootNavigator from './navigation/RootNavigator';
 import LoadingWithLogo from './components/LoadingWIthLogo';
 import { AuthStore } from './stores/AuthStore';
 import { NativeBaseProvider } from 'native-base';
+import theme from './styles/theme';
 
 const App = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -27,7 +28,9 @@ const App = () => {
   return (
     <ErrorBoundary>
       <NavigationContainer>
-        <NativeBaseProvider>
+        <NativeBaseProvider
+          theme={theme}
+        >
           <RootNavigator isAuthenticated={isAuthenticated} />
         </NativeBaseProvider>
       </NavigationContainer>

@@ -11,6 +11,7 @@ const REFRESH_TOKEN_KEY = 'REFRESH_TOKEN';
  */
 export const setAccessToken = async (token) => {
   try {
+    console.log('Setting access token:', token);
     await AsyncStorage.setItem(ACCESS_TOKEN_KEY, token);
     console.log('Access token stored successfully!');
   } catch (error) {

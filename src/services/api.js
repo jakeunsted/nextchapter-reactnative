@@ -20,8 +20,9 @@ async function myFetch(path, options) {
       if (refreshToken) {
         const refreshResponse = await refreshAccessToken();
         if (refreshResponse.ok) {
-          const newToken = await refreshResponse.json();
-          options.headers.Authorization = `Bearer ${newToken.accessToken}`;
+          console.log('Token refreshed: ', refreshResponse.json());
+          const data = await refreshResponse.json();
+          options.headers.Authorization = `Bearer ${data.accessToken}`;
 
           return fetch(url, options);
         } else {
