@@ -12,6 +12,8 @@ const styles = {
   image: {
     paddingBottom: 8,
     maxHeight: 200,
+    width: 120,
+    height: 200,
   },
 };
 
@@ -21,6 +23,10 @@ const goToBookDetails = (bookId) => {
 
 const BookCard = (props) => {
   const { book } = props;
+  const bookImageUri =
+    book.book.bookDetails?.volumeInfo?.imageLinks?.thumbnail?.replace(
+      'http://', 'https://'
+    );
   return (
     <Pressable
       onPress={() => goToBookDetails(book.id)}
@@ -29,8 +35,7 @@ const BookCard = (props) => {
       <Box alignItems="center">
         <Image
           source={{
-            uri: book.book.bookDetails?.
-              volumeInfo?.imageLinks?.thumbnail || book.image,
+            uri: bookImageUri,
           }}
           alt="Book Thumbnail"
           style={styles.image}
@@ -45,32 +50,5 @@ const BookCard = (props) => {
     </Pressable>
   );
 };
-
-// in nuxtJS, I have the following:
-/*
-<v-card
-  class="max-w-44 min-w-44 p-2"
-  rounded="xl"
-  elevation="10"
-  @click="goToBookDetails(book.id)"
->
-  <v-card-text class="text-wrap text-center">
-    <v-img
-      :src="book.book.bookDetails?.
-        volumeInfo?.imageLinks?.thumbnail ||
-        book.image"
-      class="pb-2 max-h-50"
-    ></v-img>
-    <p>{{ book.book.title }}</p>
-    <p class="text-grey">
-      {{
-        new Date(book.dateFinished ||
-          book.dateStarted ||
-          book.createdAt).toLocaleDateString()
-      }}
-    </p>
-  </v-card-text>
-</v-card>
-*/
 
 export default BookCard;
