@@ -2,6 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { ActivityIndicator } from 'react-native';
 import { View, Text, ScrollView } from 'native-base';
 import theme from '../styles/theme';
+import {
+  profileImage,
+  profileImageContainer,
+  userProfileContainer,
+  userInfoContainer,
+} from '../styles/styles';
 
 /*
 stores
@@ -56,13 +62,13 @@ const HomeDashboard = (props) => {
     <ScrollView>
       <View>
         {!userLoading && user && (
-          <View style={styles.userProfileContainer}>
-            <View style={styles.profileImageContainer}>
-              <View style={styles.profileImage}>
+          <View style={userProfileContainer}>
+            <View style={profileImageContainer}>
+              <View style={profileImage}>
                 <Text>JU</Text>
               </View>
             </View>
-            <View style={styles.userInfoContainer}>
+            <View style={userInfoContainer}>
               <Text>{user.username}</Text>
               <Text>Date Joined: {
                 new Date(user.createdAt).toLocaleDateString('en-GB')
@@ -96,24 +102,24 @@ const HomeDashboard = (props) => {
 };
 
 const styles = {
-  userProfileContainer: {
-    alignItems: 'center',
-    marginTop: 40,
-  },
-  profileImageContainer: {
-    marginBottom: 20,
-  },
-  profileImage: {
-    borderRadius: 40,
-    width: 80,
-    height: 80,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: theme.colors.primary.DEFAULT,
-  },
-  userInfoContainer: {
-    alignItems: 'center',
-  },
+  // userProfileContainer: {
+  //   alignItems: 'center',
+  //   marginTop: 40,
+  // },
+  // profileImageContainer: {
+  //   marginBottom: 20,
+  // },
+  // profileImage: {
+  //   borderRadius: 40,
+  //   width: 80,
+  //   height: 80,
+  //   justifyContent: 'center',
+  //   alignItems: 'center',
+  //   backgroundColor: theme.colors.primary.DEFAULT,
+  // },
+  // userInfoContainer: {
+  //   alignItems: 'center',
+  // },
   divider: {
     height: 2,
     backgroundColor: 'grey',
