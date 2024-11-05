@@ -1,9 +1,11 @@
+/* eslint-disable react/no-unstable-nested-components */
 import React, { useState } from 'react';
 import { TouchableOpacity, StyleSheet } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeDashboard from '../screens/HomeDashboard';
 import Suggestions from '../screens/Suggestions';
 import BottomDrawerMenu from '../components/navigation/AddBookDrawer';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const Tab = createBottomTabNavigator();
 
@@ -14,24 +16,45 @@ const TabNavigator = () => {
     <>
       {isDrawerVisible && (
         <TouchableOpacity
-          animationType="fade"
           style={styles.overlay}
           onPress={() => setDrawerVisible(false)}
         />
       )}
       <Tab.Navigator>
-        <Tab.Screen name="Home" component={HomeDashboard} />
+        <Tab.Screen
+          name="Home"
+          component={HomeDashboard}
+          options={{
+            tabBarIcon: ({ color, size }) => ( 
+              <Icon name="home" color={color} size={size} />
+            ),
+          }}
+        />
         <Tab.Screen
           name="Add"
-          component={() => null}
           listeners={{
             tabPress: (e) => {
               e.preventDefault();
               setDrawerVisible(true);
             },
           }}
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <Icon name="plus" color={color} size={size} />
+            ),
+          }}
+        >
+          {() => null} 
+        </Tab.Screen>
+        <Tab.Screen
+          name="Suggestions"
+          component={Suggestions}
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <Icon name="heart" color={color} size={size} />
+            ),
+          }}
         />
-        <Tab.Screen name="Suggestions" component={Suggestions} />
       </Tab.Navigator>
       <BottomDrawerMenu
         visible={isDrawerVisible}
